@@ -27,6 +27,8 @@ let difficulty=0
 
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
+console.log(canvas.width)
+console.log(canvas.height)
 
 class Menu{
     constructor()
@@ -266,8 +268,11 @@ class Grid{
             y:0
         }
         this.invaders = []
-
-        const limit1 = Math.floor(Math.random()*6+4)
+        let limit1
+        if(canvas.width<=1000)
+        limit1 = Math.floor(Math.random()*4+2)
+        else
+        limit1 = Math.floor(Math.random()*6+4)
         const limit2 = Math.floor(Math.random()*5+2)
         
         this.width = limit1*85
@@ -789,3 +794,48 @@ addEventListener('keyup',({key})=>{
        // console.log('space')
     }
 })
+if(canvas.width<=1000)
+        {
+        setInterval(() => {
+            if((!pause&&game.active&&player.opacity===1))
+            sfx.shoot.play()
+            projectiles.push(
+                new Projectile({
+                    position:{
+                        x: player.position.x +player.width/2,
+                        y: player.position.y
+                    },
+                    velocity: {
+                        x: 0,
+                        y: -5
+                    }
+                })
+            )
+        }, 450);
+        }
+addEventListener('touchstart',handleStart)
+function handleStart(e)
+{
+    if(game.over)
+    return
+    if(e.touches[0].clientX <canvas.width/2)
+    {
+        keys.a.pressed=true
+    }
+    if(e.touches[0].clientX>+canvas.width/2)
+    {
+        keys.d.pressed=true
+    }
+}
+addEventListener('touchend',handleEnd)
+function handleEnd(e)
+{
+    if(e.touches[0].clientX<canvas.width/2)
+    {
+        keys.a.pressed=false
+    }
+    if(e.touches[0].clientX>canvas.width/2)
+    {
+        keys.a.pressed=false
+    }
+}

@@ -31,18 +31,3 @@ body{
            font-size: 20px;
             display: none;
 }
-.topbtn{
-    z-index: 1;
-    display: none;
-    position: fixed;
-    text-align: center;
-    font-size: 4vw;
-    color: #f2f2f2;
-    width: 4vw;
-    height: 4vw;
-    background-color: #6109cc;
-    opacity: 60%;
-    border-radius: 30%;
-    bottom: 5vw;
-    right: 5.5vw;
-  }
