@@ -1,0 +1,48 @@
+body{
+    margin: 0;
+    display: flex;
+    
+}
+#startMenu{
+    z-index: 1;
+    background-image: linear-gradient(tobottom,#64f76e,#64f76e);
+    background-size: cover;
+    width: 100vh;
+    height: 100vh;
+}
+#scoreDisplay{
+    z-index: 1;
+    display: none;
+    position: fixed;
+    color: white;
+    margin-top: 70vh;
+    margin-left: 36.5vw;
+    font-size: 50px;
+    font-family: Silkscreen;
+}
+#topScore{
+    position: fixed;
+     z-index:1;
+      color:white; 
+       left:10px; 
+        top:10px; 
+         margin: 0;
+          font-family: Silkscreen;
+           font-size: 20px;
+            display: none;
+}
+.topbtn{
+    z-index: 1;
+    display: none;
+    position: fixed;
+    text-align: center;
+    font-size: 4vw;
+    color: #f2f2f2;
+    width: 4vw;
+    height: 4vw;
+    background-color: #6109cc;
+    opacity: 60%;
+    border-radius: 30%;
+    bottom: 5vw;
+    right: 5.5vw;
+  }
