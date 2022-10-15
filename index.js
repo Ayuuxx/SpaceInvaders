@@ -29,6 +29,7 @@ canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 console.log(canvas.width)
 console.log(canvas.height)
+const globalScale=canvas.width/1920
 
 class Menu{
     constructor()
@@ -69,7 +70,7 @@ class Player{
         const image = new Image()
         image.src="./ship.png"
         image.onload =() =>{
-            const scale=0.25 
+            const scale=0.25*globalScale
             this.image=image
             this.width = image.width*scale
             this.height = image.height*scale
@@ -81,7 +82,7 @@ class Player{
         const imag2 = new Image()
         imag2.src="./heart.png"
         imag2.onload =() =>{
-            const scale=0.08
+            const scale=0.08*globalScale
             this.image2=imag2
             this.width2 = imag2.width*scale
             this.height2 = imag2.height*scale
@@ -219,7 +220,7 @@ class Invader{
         const image = new Image()
         image.src="./invader.png"
         image.onload =() =>{
-            const scale=0.2
+            const scale=0.2*globalScale
             this.image=image
             this.width = image.width*scale
             this.height = image.height*scale
@@ -227,6 +228,7 @@ class Invader{
                 x: position.x,
                 y: position.y    
             }
+            console.log(this.width)
         }
     }
     draw() {
@@ -245,7 +247,7 @@ class Invader{
     {
         InvProjs.push(new InvaderProjectile({
             position:{
-                x: this.position.x + 40,
+                x: this.position.x + this.width/2+5*globalScale,
                 y: this.position.y
             },
             //projectile velocity here
@@ -264,7 +266,7 @@ class Grid{
             y:0
         }
         this.velocity={
-            x:3.5,
+            x:3.5*globalScale,
             y:0
         }
         this.invaders = []
@@ -275,7 +277,7 @@ class Grid{
         limit1 = Math.floor(Math.random()*6+4)
         const limit2 = Math.floor(Math.random()*5+2)
         
-        this.width = limit1*85
+        this.width = limit1*85*globalScale
 
         for(let row=0; row<limit1;row++)
         {for(let column=0; column<limit2;column++)
@@ -283,8 +285,8 @@ class Grid{
             this.invaders.push(new Invader(
                 {   
                     position: {
-                        x:row*90,
-                        y:column*60
+                        x:row*90*globalScale,
+                        y:column*60*globalScale
                     }
                 }
             ))
@@ -412,7 +414,7 @@ class Stage{
     }
     accelerate()
     {
-        this.velocity=10
+        this.velocity=10*globalScale
         this.count=2
     }
 }
@@ -470,7 +472,7 @@ function Gameover(grids,invprs,prs)
     image.src="./Game Over.png"
     image.onload =() =>{
         this.img= image
-        const scale=1
+        const scale=1*globalScale
         this.width = image.width*scale
         this.height = image.height*scale
     }
@@ -500,7 +502,7 @@ function Displaypause(){
         image.src = "./pause.png";
         image.onload = () => {
             this.img = image;
-            const scale = 0.5;
+            const scale = 0.5*globalScale
             this.width = image.width * scale;
             this.height = image.height * scale;
         if (this.img) {
@@ -510,7 +512,7 @@ function Displaypause(){
 }
 function sectorClear()
 {   
-    if(stage.velocity===10)
+    if(stage.velocity===10*globalScale)
     {
     ctx.font="60px Silkscreen"
     const txt= "Sector Cleared!"
@@ -623,13 +625,39 @@ function animate()
     grids.forEach((grid,num) => {
         grid.update()
         //projectile spawn inv
-        if(frames%300===0 && grid.invaders.length>0)
+        if(frames%Math.floor(300/globalScale)===0 && grid.invaders.length>0)
         {
             grid.invaders[Math.floor(Math.random()*grid.invaders.length)].shoot(invaderprojectiles)
 
         }
         grid.invaders.forEach((invader,i) =>{
             invader.update({velocity : grid.velocity})
+            if(invader.position.x+invader.width>=player.position.x
+                &&invader.position.x-invader.width<=player.position.x+player.width
+                &&invader.position.y>=player.position.y
+                &&invader.position.y+invader.height<=player.position.y+player.height)
+                {
+                    sfx.boom2.play()
+                    createParticles(player,'yellow',20)
+                    setTimeout(()=>{
+                    player.opacity=0
+                    game.over=true
+                    },0)
+                    setTimeout(() => {
+                        game.active=false
+                    }, 100);
+                    setTimeout(()=>{grid.invaders.splice(i,1)},0)
+                }
+            if(invader.position.y+invader.height>=canvas.width)
+            {
+                setTimeout(()=>{
+                    player.opacity=0
+                    game.over=true
+                    },0)
+                    setTimeout(() => {
+                        game.active=false
+                    }, 1000);
+            }
             projectiles.forEach((projectile,j)=>{
                 if((projectile.position.y-projectile.radius<= invader.position.y+invader.height)
                 &&(projectile.position.x+projectile.radius>=invader.position.x)
@@ -662,7 +690,7 @@ function animate()
                             if(grid.invaders.length>0){
                                 const firstinv= grid.invaders[0]
                                 const lastinv= grid.invaders[grid.invaders.length-1]
-                                grid.width=lastinv.position.x-firstinv.position.x + 90
+                                grid.width=lastinv.position.x-firstinv.position.x + 90*globalScale
                                 grid.position.x=firstinv.position.x
                             }
                             else{
@@ -818,24 +846,24 @@ function handleStart(e)
 {
     if(game.over)
     return
-    if(e.touches[0].clientX <canvas.width/2)
+    if(e.touches[0].pageX <canvas.width/2)
     {
-        keys.a.pressed=true
+        keys.a.pressed=false
     }
-    if(e.touches[0].clientX>+canvas.width/2)
+    if(e.touches[0].pageX>+canvas.width/2)
     {
-        keys.d.pressed=true
+        keys.d.pressed=false
     }
 }
 addEventListener('touchend',handleEnd)
 function handleEnd(e)
 {
-    if(e.touches[0].clientX<canvas.width/2)
+    if(e.touches[0].pageX<canvas.width/2)
     {
-        keys.a.pressed=false
+        keys.a.pressed=true
     }
-    if(e.touches[0].clientX>canvas.width/2)
+    if(e.touches[0].pageX>canvas.width/2)
     {
-        keys.a.pressed=false
+        keys.d.pressed=true
     }
 }
