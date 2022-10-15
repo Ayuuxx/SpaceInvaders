@@ -87,8 +87,8 @@ class Player{
             this.width2 = imag2.width*scale
             this.height2 = imag2.height*scale
             this.position2={
-                x: 50,
-                y: canvas.height-this.width2-50
+                x: 50*globalScale,
+                y: canvas.height-this.width2-50*globalScale
             }
         }
         this.rotation=0
